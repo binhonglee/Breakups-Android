@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:tools="http://schemas.android.com/tools"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		tools:context="bills.breakup.GetInfo"
+		android:id="@+id/getInfo"
+		android:layout_marginTop="20dp"
+		android:layout_marginBottom="20dp"
+		android:layout_marginLeft="30dp"
+		android:layout_marginRight="30dp"
+>
+
+	<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="30dp"
+			android:layout_margin="0dp"
+			android:text="Number of users: "
+			android:textSize="20sp"
+			android:textColor="#000000"
+			android:id="@+id/userCountTxtView"
+	/>
+
+	<EditText
+			android:layout_width="fill_parent"
+			android:layout_height="50dp"
+			android:layout_marginTop="-10dp"
+			android:layout_toRightOf="@id/userCountTxtView"
+			android:layout_toEndOf="@id/userCountTxtView"
+			android:inputType="number"
+			android:id="@+id/userCountEditTxt"
+	/>
+
+	<Button
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="10dp"
+			android:text="Start"
+			android:layout_below="@id/userCountTxtView"
+			android:id="@+id/startBtn"
+	/>
+
+	<View
+			android:id="@+id/edit_first_divider"
+			android:layout_below="@id/startBtn"
+			android:layout_margin="0dp"
+			android:layout_width="match_parent"
+			android:layout_height="3dp"
+			android:background="@android:color/darker_gray"/>
+
+	<Button
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_alignParentBottom="true"
+			android:text="Confirm"
+			android:id="@+id/confirmBtn"
+	/>
+
+	<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="match_parent"
+			android:layout_height="fill_parent"
+			android:layout_margin="10dp"
+			android:layout_below="@id/edit_first_divider"
+			android:id="@+id/forInputs"
+	>
+
+	</LinearLayout>
+
+</RelativeLayout>
+
