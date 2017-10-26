@@ -1,27 +1,20 @@
 package bills.breakup
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
+import android.text.InputType
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.TextView
-import okhttp3.*
-import java.io.IOException
 
 class GetInfo : AppCompatActivity() {
     private var userCount: EditText? = null
-    private var feedback: TextView? = null
     private var layout: LinearLayout? = null
-    private val LOG_TAG = "OkHttp"
     private var startBtn: Button? = null
     private var confirmBtn: Button? = null
     private var amounts = ArrayList<EditText>()
-    private var res: String = "fail"
-
-    private val JSON = MediaType.parse("application/json; charset=utf-8")
+    private var names = ArrayList<EditText>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,67 +28,49 @@ class GetInfo : AppCompatActivity() {
         }
         confirmBtn = findViewById(R.id.confirmBtn) as Button
         confirmBtn!!.setOnClickListener {
-            layout!!.removeAllViewsInLayout()
-            layout!!.addView(feedback)
-            feedback!!.visibility = View.VISIBLE
             get()
-            feedback!!.text = res
         }
-
-        feedback = TextView(this)
-        feedback!!.visibility = View.GONE
     }
 
     private fun createMoreGUIS(amount: Int) {
         layout!!.removeAllViewsInLayout()
         for (i in 0..(amount - 1)) {
-            val thisTxtView = TextView(this)
-            val thisEditTxt = EditText(this)
-            thisTxtView.setText("User" + (i+1) + ": ")
-            thisTxtView.textSize = 18F
-            thisEditTxt.textSize = 15F
-            thisEditTxt.minWidth = 100
-            layout!!.addView(thisTxtView)
-            layout!!.addView(thisEditTxt)
-            amounts.add(thisEditTxt)
+            val name = EditText(this)
+            val amount = EditText(this)
+            name.textSize = 15F
+            name.maxWidth = 50
+            name.hint = "Name"
+            amount.textSize = 15F
+            amount.minWidth = 100
+            amount.inputType = InputType.TYPE_CLASS_NUMBER
+            amount.hint = "Amount paid"
+            layout!!.addView(name)
+            layout!!.addView(amount)
+            names.add(name)
+            amounts.add(amount)
         }
     }
 
     private fun get() {
-        val inputs = ArrayList<Int>()
-        (0..(amounts.size - 1)).mapTo(inputs) { Integer.valueOf(amounts[it].text.toString()) }
-
         var json: String = "{\n" +
                 "  \"users\": [\n"
 
-        for (i in 0..(inputs.size - 2)) {
+        for (i in 0..(amounts.size - 2)) {
             json += "    {\n" +
-                    "      \"name\": \"User" + (i+1) + "\",\n" +
-                    "      \"amount\": " + inputs[i] + "\n" +
+                    "      \"name\": \"" + names[i].text.toString() + "\",\n" +
+                    "      \"amount\": " + Integer.valueOf(amounts[i].text.toString()) + "\n" +
                     "    },\n"
         }
 
         json += "    {\n" +
-                "      \"name\": \"User" + (inputs.size) + "\",\n" +
-                "      \"amount\": " + inputs[inputs.size - 1] + "\n" +
+                "      \"name\": \"User" + names[(names.size - 1)].text.toString() + "\",\n" +
+                "      \"amount\": " + Integer.valueOf(amounts[(names.size - 1)].text.toString()) + "\n" +
                 "    }\n" +
                 "  ]\n" +
                 "}"
 
-        val client = OkHttpClient()
-        val request = Request.Builder()
-                .url("https://breakups.herokuapp.com/paymentChain")
-                .post(RequestBody.create(JSON, json))
-                .build()
-        client.newCall(request).enqueue(object : Callback {
-            override fun onResponse(call: Call?, response: Response?) {
-                res = response!!.body()!!.string()
-                Log.i(LOG_TAG, response.toString())
-            }
-
-            override fun onFailure(call: Call?, e: IOException?) {
-                Log.e(LOG_TAG, e.toString())
-            }
-        })
+        val registerIntent = Intent(this@GetInfo, ShowResult::class.java)
+        registerIntent.putExtra("data", json)
+        startActivity(registerIntent)
     }
 }
